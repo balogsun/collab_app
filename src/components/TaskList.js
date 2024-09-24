@@ -1,49 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
-  const [error, setError] = useState(null); // Add error state
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch tasks from backend
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get('/api/tasks');
-        
-        // Check if response.data is an array
-        if (Array.isArray(response.data)) {
-          setTasks(response.data);
-        } else {
-          console.error("Expected an array but got:", response.data);
-          setTasks([]); // Set tasks to an empty array or handle accordingly
-        }
-      } catch (err) {
-        console.error("Error fetching tasks:", err);
-        setError(err); // Set error state
-      } finally {
-        setLoading(false); // Set loading to false regardless of the outcome
-      }
+    // Simulate fetching tasks with a timeout
+    const fetchTasks = () => {
+      // Example static tasks data
+      const staticTasks = [
+        { id: 1, name: 'Task 1', status: 'In Progress' },
+        { id: 2, name: 'Task 2', status: 'Completed' },
+        { id: 3, name: 'Task 3', status: 'Pending' },
+      ];
+
+      // Simulate a network delay
+      setTimeout(() => {
+        setTasks(staticTasks);
+        setLoading(false); // Set loading to false after "fetching"
+      }, 1000); // Adjust timeout as needed
     };
 
     fetchTasks();
   }, []);
 
-  // Show loading state
   if (loading) {
     return <div>Loading tasks...</div>;
-  }
-
-  // Show error state if there was an error
-  if (error) {
-    return <div>Error fetching tasks: {error.message}</div>;
   }
 
   return (
     <div>
       <h3>Task List</h3>
-      {tasks.length === 0 ? ( // Check if tasks are empty
+      {tasks.length === 0 ? (
         <p>No tasks available.</p>
       ) : (
         <ul>
