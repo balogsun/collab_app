@@ -1,26 +1,23 @@
-import React from "react";
+import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter } from 'react-router-dom';
-import StoreContextProvider from './app/store/store'
-import AppSwitcher from './app/containers/AppSwitcher'
-import ErrorBoundary from './app/components/ui/ErrorBoundary'
-import InstantSearches from "app/containers/InstantSearches"
-import { HelmetProvider } from 'react-helmet-async'
 
 function App() {
   return (
     <div className="App">
-      <StoreContextProvider>
-        <HelmetProvider>
-          <BrowserRouter>
-            <ErrorBoundary>
-              <InstantSearches>
-                <AppSwitcher />
-              </InstantSearches>
-            </ErrorBoundary>
-          </BrowserRouter>
-        </HelmetProvider>
-      </StoreContextProvider>
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
     </div>
   );
 }
