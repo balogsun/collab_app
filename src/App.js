@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Dashboard from './components/Dashboard';
+import FeatureRequest from './components/FeatureRequest';
+import Messages from './components/Messages';
+import ProgressTracker from './components/ProgressTracker';
+import TaskList from './components/TaskList';
+import './styles.css'; // Ensure your CSS file is imported
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Seun Application</h1>
+      <Dashboard />
+      <FeatureRequest />
+      <Messages />
+      <ProgressTracker />
+      <TaskList />
     </div>
   );
 }
