@@ -3,53 +3,46 @@ import axios from 'axios';
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
-  const [error, setError] = useState(null); // Add error state
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch tasks from backend
     const fetchTasks = async () => {
       try {
         const response = await axios.get('/api/tasks');
+        console.log("Raw API response:", response);
         
-        // Check if response.data is an array
         if (Array.isArray(response.data)) {
           setTasks(response.data);
         } else {
           console.error("Expected an array but got:", response.data);
-          setTasks([]); // Set tasks to an empty array or handle accordingly
+          setError(new Error("Unexpected data format received from server"));
+          setTasks([]);
         }
       } catch (err) {
         console.error("Error fetching tasks:", err);
-        setError(err); // Set error state
+        setError(err);
       } finally {
-        setLoading(false); // Set loading to false regardless of the outcome
+        setLoading(false);
       }
     };
 
     fetchTasks();
   }, []);
 
-  // Show loading state
-  if (loading) {
-    return <div>Loading tasks...</div>;
-  }
-
-  // Show error state if there was an error
-  if (error) {
-    return <div>Error fetching tasks: {error.message}</div>;
-  }
+  if (loading) return <div>Loading tasks...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div>
       <h3>Task List</h3>
-      {tasks.length === 0 ? ( // Check if tasks are empty
+      {tasks.length === 0 ? (
         <p>No tasks available.</p>
       ) : (
         <ul>
           {tasks.map((task) => (
-            <li key={task.id}>
-              {task.name} - {task.status}
+            <li key={task.id || task._id}>
+              {task.name || task.title} - {task.status}
             </li>
           ))}
         </ul>
