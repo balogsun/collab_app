@@ -1,0 +1,15 @@
+projects:
+  collabapp:
+    schemaPath: amplify/backend/api/collabapp/build/schema.graphql
+    includes:
+      - src/graphql/**/*.js
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: javascript
+        generatedFileName: ''
+        docsFilePath: src/graphql
+        region: ca-central-1
+        apiId: null
+        maxDepth: 2
