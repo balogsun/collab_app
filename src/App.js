@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { API, graphqlOperation } from 'aws-amplify'; // Import Amplify functionalities
-import { listTasks } from './graphql/queries'; // Import GraphQL query to fetch tasks
-import { onCreateTask } from './graphql/subscriptions'; // Import GraphQL subscription for real-time updates
-import Amplify from 'aws-amplify';
-import config from './aws-exports'; // AWS configuration
+import { Amplify } from 'aws-amplify';
+import { generateClient } from '@aws-amplify/api';
+import { listTasks } from './graphql/queries';
+import { onCreateTask } from './graphql/subscriptions';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import config from './aws-exports';
 
 // Import your existing components
 import Dashboard from './components/Dashboard';
@@ -11,65 +13,67 @@ import FeatureRequest from './components/FeatureRequest';
 import Messages from './components/Messages';
 import ProgressTracker from './components/ProgressTracker';
 import TaskList from './components/TaskList';
-import './styles.css'; // Import your CSS
+import './styles.css';
 
 // Configure Amplify
 Amplify.configure(config);
 
+// Generate API client
+const client = generateClient();
+
 function App() {
   const [tasks, setTasks] = useState([]);
 
-  // Fetch tasks from the GraphQL API on component mount
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  // Fetch existing tasks from the API
   const fetchTasks = async () => {
     try {
-      const taskData = await API.graphql(graphqlOperation(listTasks));
-      setTasks(taskData.data.listTasks.items); // Set fetched tasks to state
+      const taskData = await client.graphql({ query: listTasks });
+      setTasks(taskData.data.listTasks.items);
     } catch (error) {
-      console.error('Error fetching tasks:', error); // Handle errors
+      console.error('Error fetching tasks:', error);
     }
   };
 
-  // Subscribe to real-time task creation events using GraphQL subscription
   useEffect(() => {
-    const subscription = API.graphql(
-      graphqlOperation(onCreateTask)
-    ).subscribe({
+    const subscription = client.graphql({ query: onCreateTask }).subscribe({
       next: (eventData) => {
-        const newTask = eventData.value.data.onCreateTask; // Extract new task from event data
-        setTasks((prevTasks) => [...prevTasks, newTask]); // Add the new task to the existing list
+        const newTask = eventData.value.data.onCreateTask;
+        setTasks((prevTasks) => [...prevTasks, newTask]);
       }
     });
 
-    // Cleanup: Unsubscribe from the subscription when the component unmounts
     return () => subscription.unsubscribe();
   }, []);
 
   return (
-    <div className="App">
-      <h1>Seun Application</h1>
+    <Authenticator>
+      {({ signOut, user }) => (
+        <div className="App">
+          <h1>Seun Application</h1>
+          <button onClick={signOut}>Sign out</button>
 
-      {/* Existing Components */}
-      <Dashboard />
-      <FeatureRequest />
-      <Messages />
-      <ProgressTracker />
-      <TaskList />
+          {/* Existing Components */}
+          <Dashboard />
+          <FeatureRequest />
+          <Messages />
+          <ProgressTracker />
+          <TaskList />
 
-      {/* Render Task List */}
-      <div className="task-list-container">
-        <h2>Task List</h2>
-        <ul>
-          {tasks.map((task) => (
-            <li key={task.id}>{task.title}</li> // Display task titles
-          ))}
-        </ul>
-      </div>
-    </div>
+          {/* Render Task List */}
+          <div className="task-list-container">
+            <h2>Task List</h2>
+            <ul>
+              {tasks.map((task) => (
+                <li key={task.id}>{task.title}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </Authenticator>
   );
 }
 
