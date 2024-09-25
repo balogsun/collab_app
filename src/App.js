@@ -5,6 +5,7 @@ import { listTasks } from './graphql/queries';
 import { onCreateTask } from './graphql/subscriptions';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import { API, graphqlOperation } from 'aws-amplify';
 import config from './aws-exports';
 
 // Import your existing components

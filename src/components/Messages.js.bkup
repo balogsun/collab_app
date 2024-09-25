@@ -11,15 +11,14 @@ const Messages = () => {
     const fetchMessages = async () => {
       try {
         const response = await axios.get('/api/messages');
+        console.log("Raw API response:", response);
         
-        if (response.headers['content-type'].includes('application/json')) {
-          if (Array.isArray(response.data)) {
-            setMessages(response.data);
-          } else {
-            throw new Error("Expected an array but got an unexpected format.");
-          }
+        if (Array.isArray(response.data)) {
+          setMessages(response.data);
         } else {
-          throw new Error("Response is not JSON.");
+          console.error("Expected an array but got:", response.data);
+          setError(new Error("Unexpected data format received from server"));
+          setMessages([]);
         }
       } catch (err) {
         console.error("Error fetching messages:", err);
@@ -35,12 +34,11 @@ const Messages = () => {
   const sendMessage = async () => {
     try {
       const response = await axios.post('/api/messages', { text: newMessage });
-      
       if (response.data && typeof response.data === 'object') {
         setMessages([...messages, response.data]);
         setNewMessage('');
       } else {
-        throw new Error("Unexpected response format.");
+        console.error("Unexpected response format:", response.data);
       }
     } catch (err) {
       console.error("Error sending message:", err);

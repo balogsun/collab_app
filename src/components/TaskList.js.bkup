@@ -10,15 +10,14 @@ const TaskList = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get('/api/tasks');
- 
-        if (response.headers['content-type'].includes('application/json')) {
-          if (Array.isArray(response.data)) {
-            setTasks(response.data);
-          } else {
-            throw new Error("Expected an array but got an unexpected format.");
-          }
+        console.log("Raw API response:", response);
+        
+        if (Array.isArray(response.data)) {
+          setTasks(response.data);
         } else {
-          throw new Error("Response is not JSON.");
+          console.error("Expected an array but got:", response.data);
+          setError(new Error("Unexpected data format received from server"));
+          setTasks([]);
         }
       } catch (err) {
         console.error("Error fetching tasks:", err);
