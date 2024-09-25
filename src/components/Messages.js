@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API, graphqlOperation } from 'aws-amplify';
+import { listMessages } from '../graphql/queries';
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
